@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chunfeng.po.PayMapper">
+    <!--支付实体类映射-->
+    <resultMap id="payMap" type="com.chunfeng.domain.Pay">
+        <result property="payId" column="pay_id"/>
+        <result property="payMoney" column="pay_money"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="userId" column="user_id"/>
+        <result property="payType" column="pay_type"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="refundTime" column="refund_time"/>
+    </resultMap>
+    <!--查询所有支付的账单-->
+    <select id="selectAllPay" resultType="com.chunfeng.domain.Pay" resultMap="payMap">
+        select *
+        from pay;
+    </select>
+    <!--根据id值查询支付的账单-->
+    <select id="selectById" resultType="com.chunfeng.domain.Pay" resultMap="payMap">
+        select *
+        from pay
+        where pay_id in
+        <foreach collection="payIds" item="payId" open="(" separator="," close=")">
+            #{payId}
+        </foreach>;
+    </select>
+    <!--根据用户id值查询-->
+    <select id="selectByUserId" resultType="com.chunfeng.domain.Pay" resultMap="payMap">
+        select *
+        from pay
+        where user_id = #{userId};
+    </select>
+    <!--添加支付账单-->
+    <insert id="insertPay">
+        insert into pay (pay_money, pay_type, user_id, pay_time)
+        values (#{payMoney},
+                #{payType},
+                #{userId},
+                #{payTime});
+    </insert>
+    <!--根据id值批量修改支付账单-->
+    <update id="updatePayById">
+        <foreach collection="pays" item="pay" separator=";">
+            update pay
+            <set>
+                <if test="pay.payMoney!='' and pay.payMoney!=null">
+                    pay_money=#{pay.payMoney},
+                </if>
+                <if test="pay.payType!='' and pay.payType!=null">
+                    pay_type=#{pay.payType},
+                </if>
+                <if test="pay.payStatus!=null">
+                    pay_status=#{pay.payStatus},
+                </if>
+                <if test="pay.userId!=null">
+                    user_id=#{pay.userId},
+                </if>
+                <if test="pay.payTime!='' and pay.payTime!=null">
+                    pay_time=#{pay.payMoney},
+                </if>
+                <if test="pay.refundTime!='' and pay.refundTime!=null">
+                    refund_time=#{pay.refundTime}
+                </if>
+            </set>
+            where pay_id=#{pay.payId};
+        </foreach>
+    </update>
+    <!--根据id值批量删除支付账单-->
+    <delete id="deletePayById">
+        delete
+        from pay
+        where
+        pay_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>;
+    </delete>
+</mapper>

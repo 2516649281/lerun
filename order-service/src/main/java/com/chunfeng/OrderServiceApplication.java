@@ -16,7 +16,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @Slf4j
 public class OrderServiceApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(OrderServiceApplication.class);
-        log.info("订单服务模块启动完成!");
+        ConfigurableApplicationContext app = SpringApplication.run(OrderServiceApplication.class);
+        log.info(app+":订单服务模块启动完成!");
     }
 }

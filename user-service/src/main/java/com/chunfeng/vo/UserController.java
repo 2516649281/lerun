@@ -31,7 +31,7 @@ public class UserController extends ServiceController {
      * @return JSON
      */
     @PostMapping("/login")
-    public JsonRequest<User> login(@RequestParam("userName") String userName, @RequestParam("userPassword") String userPassword) {
+    public JsonRequest<String> login(@RequestParam("userName") String userName, @RequestParam("userPassword") String userPassword) {
         return userService.login(userName, userPassword);
     }
 
@@ -48,12 +48,23 @@ public class UserController extends ServiceController {
     }
 
     /**
+     * 根据id值批量查询用户信息
+     *
+     * @param userIds 用户id
+     * @return JSON
+     */
+    @GetMapping("/selectI")
+    public JsonRequest<List<User>> selectById(@RequestParam("userIds") Long[] userIds) {
+        return userService.selectById(userIds);
+    }
+
+    /**
      * 根据id值修改用户
      *
      * @param users 待修改的数据
      * @return JSON
      */
-    @PutMapping("/updateI")
+    @PutMapping("/update")
     public JsonRequest<Integer> updateById(@RequestBody List<User> users) {
         return userService.updateById(users);
     }
@@ -63,7 +74,7 @@ public class UserController extends ServiceController {
      *
      * @return JSON
      */
-    @GetMapping("/selectA")
+    @GetMapping("/select")
     public JsonRequest<List<User>> selectAll() {
         return userService.selectAll();
     }

@@ -21,7 +21,7 @@ public interface IUserService {
      * @param userName 用户名
      * @return JSON
      */
-    JsonRequest<User> login(String userName, String userPassword);
+    JsonRequest<String> login(String userName, String userPassword);
 
     /**
      * 注册
@@ -32,6 +32,12 @@ public interface IUserService {
      */
     JsonRequest<Integer> register(String userName, String userPassword);
 
+    /**
+     * 根据id值批量查询用户信息
+     * @param userId 用户id
+     * @return JSON
+     */
+    JsonRequest<List<User>> selectById(Long[] userId);
     /**
      * 根据id值修改用户
      *

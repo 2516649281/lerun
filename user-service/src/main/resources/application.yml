@@ -25,6 +25,14 @@ mybatis:
 server:
   port: 8080
 
+#设置响应时间
+rest:
+  template:
+    conn:
+      connect-timeout: 3000
+      read-timeout: 3000
+
+
 #全局时间格式
 user:
   timeFormat: yyyy-MM-dd HH:mm:ss

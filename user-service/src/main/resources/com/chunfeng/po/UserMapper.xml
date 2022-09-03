@@ -42,11 +42,14 @@
                update_time
         from user;
     </select>
-    <!--根据id值查询-->
+    <!--根据id值批量查询-->
     <select id="selectAllByUserId" resultType="com.chunfeng.domain.User" resultMap="userMap">
         select *
         from user
-        where user_id = #{userId};
+        where user_id in
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>;
     </select>
 
     <!--添加用户-->

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * JSON响应类
  *
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JsonRequest<T> {
+public class JsonRequest<T> implements Serializable {
     private Integer status = 200;
     private String message = "请求已完成!";
     private T data;

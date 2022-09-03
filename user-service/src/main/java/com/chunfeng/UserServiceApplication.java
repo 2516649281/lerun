@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * 用户模块启动类
+ * 用户服务模块启动类
  *
  * @author by 春风能解释
  * <p>
@@ -20,7 +20,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @Slf4j
 public class UserServiceApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(UserServiceApplication.class);
-        log.info(context + ":用户服务端启动完毕!");
+        ConfigurableApplicationContext app = SpringApplication.run(UserServiceApplication.class);
+        log.info(app + ":用户服务端启动完毕!");
     }
 }

@@ -1,7 +1,7 @@
 package com.chunfeng.service.customizeException.user.register;
 
 import com.chunfeng.service.customizeException.ServiceEnum;
-import com.chunfeng.service.customizeException.ServiceException;
+import com.chunfeng.service.customizeException.user.UserException;
 
 /**
  * 注册类异常
@@ -10,9 +10,9 @@ import com.chunfeng.service.customizeException.ServiceException;
  * <p>
  * 2022/8/31
  */
-public class RegisterException extends ServiceException {
+public class UserRegisterException extends UserException {
 
-    public RegisterException(ServiceEnum serviceEnum) {
+    public UserRegisterException(ServiceEnum serviceEnum) {
         super(serviceEnum);
     }
 

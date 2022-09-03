@@ -23,7 +23,7 @@ mybatis:
         server-addr: localhost:8848
 #服务端口
 server:
-  port: 8081
+  port: 8082
 
 #全局时间格式
 user:

@@ -1,7 +1,7 @@
 package com.chunfeng.service.customizeException.user.delete;
 
 import com.chunfeng.service.customizeException.ServiceEnum;
-import com.chunfeng.service.customizeException.ServiceException;
+import com.chunfeng.service.customizeException.user.UserException;
 
 /**
  * 删除类异常
@@ -10,8 +10,8 @@ import com.chunfeng.service.customizeException.ServiceException;
  * <p>
  * 2022/8/31
  */
-public class DeleteException extends ServiceException {
-    public DeleteException(ServiceEnum serviceEnum) {
+public class DeleteUserException extends UserException {
+    public DeleteUserException(ServiceEnum serviceEnum) {
         super(serviceEnum);
     }
 }

@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
- * 用户实体
+ * 用户服务实体类
  *
  * @author by 春风能解释
  * <p>
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements Serializable {
     private Long userId;//用户编号
     private String userName;//用户名
     private String userPassword;//用户密码

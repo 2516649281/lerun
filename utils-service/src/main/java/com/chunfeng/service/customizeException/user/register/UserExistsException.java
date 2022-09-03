@@ -9,7 +9,7 @@ import com.chunfeng.service.customizeException.ServiceEnum;
  * <p>
  * 2022/8/31
  */
-public class UserExistsException extends RegisterException {
+public class UserExistsException extends UserRegisterException {
 
     public UserExistsException(ServiceEnum serviceEnum) {
         super(serviceEnum);

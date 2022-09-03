@@ -6,15 +6,15 @@ import com.chunfeng.po.UserMapper;
 import com.chunfeng.service.IUserService;
 import com.chunfeng.service.customizeException.ServiceEnum;
 import com.chunfeng.service.customizeException.user.delete.DeleteExistsException;
-import com.chunfeng.service.customizeException.user.login.PasswordErrorException;
 import com.chunfeng.service.customizeException.user.login.UserNotExistsException;
+import com.chunfeng.service.customizeException.user.login.UserPasswordErrorException;
 import com.chunfeng.service.customizeException.user.register.RegisterErrorException;
 import com.chunfeng.service.customizeException.user.register.UserExistsException;
-import com.chunfeng.service.customizeException.user.select.SelectSourceIsNullException;
-import com.chunfeng.service.customizeException.user.update.UpdateErrorException;
-import com.chunfeng.service.customizeException.user.update.UpdateNotExistsException;
+import com.chunfeng.service.customizeException.user.select.SelectUserSourceIsNullException;
+import com.chunfeng.service.customizeException.user.update.UpdateUserErrorException;
+import com.chunfeng.service.customizeException.user.update.UpdateUserNotExistsException;
+import com.chunfeng.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 用户操作业务层实现类
@@ -58,7 +61,8 @@ public class UserServiceImpl implements IUserService {
      * @return JSON
      */
     @Override
-    public JsonRequest<User> login(String userName, String userPassword) {
+    @Cacheable(value = "user_login", key = "#userName")
+    public JsonRequest<String> login(String userName, String userPassword) {
         User user = userMapper.selectByName(userName);
         if (Objects.isNull(user)) {
             throw new UserNotExistsException(ServiceEnum.USER_NOT_EXISTS);
@@ -68,10 +72,12 @@ public class UserServiceImpl implements IUserService {
         //加密密码
         String password = key + "$" + getPassword(userPassword, key);
         if (!password.equals(user.getUserPassword())) {
-            throw new PasswordErrorException(ServiceEnum.PASSWORD_ERROR);
+            throw new UserPasswordErrorException(ServiceEnum.USER_PASSWORD_ERROR);
         }
+        //构造token
+        String token = new JwtUtils<>().createToken(user);
         log.info("用户" + userName + "登录成功!");
-        return new JsonRequest<>(user);
+        return new JsonRequest<>(token);
     }
 
     /**
@@ -96,10 +102,26 @@ public class UserServiceImpl implements IUserService {
                         new SimpleDateFormat(timeFormat).format(new Date()),//创建时间
                         new SimpleDateFormat(timeFormat).format(new Date())));//修改时间
         if (column < 1) {
-            throw new RegisterErrorException(ServiceEnum.REGISTER_ERROR);
+            throw new RegisterErrorException(ServiceEnum.USER_REGISTER_ERROR);
         }
         log.info("用户" + userName + "注册成功!");
         return new JsonRequest<>(column);
+    }
+
+    /**
+     * 根据id值批量查询用户信息
+     *
+     * @param userIds 用户id
+     * @return JSON
+     */
+    @Cacheable(value = "users_Id")
+    @Override
+    public JsonRequest<List<User>> selectById(Long[] userIds) {
+        List<User> users = userMapper.selectAllByUserId(userIds);
+        if (users.isEmpty()) {
+            throw new SelectUserSourceIsNullException(ServiceEnum.SELECT_USER_IS_NULL);
+        }
+        return new JsonRequest<>(users);
     }
 
     /**
@@ -111,36 +133,37 @@ public class UserServiceImpl implements IUserService {
     @CacheEvict(value = "users", allEntries = true)
     @Override
     public JsonRequest<Integer> updateById(List<User> users) {
-        List<User> selectUsers = new ArrayList<>();
-        for (User user : users) {
-            User selectUser = userMapper.selectAllByUserId(user.getUserId());
-            selectUsers.add(selectUser);
-            //如果修改密码,则加密
-            if (user.getUserPassword() != null) {
-                //盐值
-                String key = selectUser.getUserPassword().split("\\$")[0];
-                //加密密码
-                String password = key + "$" + getPassword(user.getUserPassword(), key);
-                user.setUserPassword(password);
+        Long[] userIds = new Long[users.size()];
+        //第一步,取出其中的用户id
+        for (int i = 0; i < users.size(); i++) {
+            Long userId = users.get(i).getUserId();
+            //如果找到一个用户的id显示为空,则直接停止循环并交给判断处理
+            if (userId == null) {
+                break;
             }
-            user.setUpdateTime(
-                    new SimpleDateFormat(timeFormat).format(new Date())
-            );
-        }
-        //数据检测
-        for (User selectUser : selectUsers) {
-            //判断物理数据和逻辑数据
-            if (Objects.isNull(selectUser) || selectUser.getUserStatus() == 1) {
-                throw new UpdateNotExistsException(ServiceEnum.UPDATE_NOT_EXISTS);
+            userIds[i] = userId;
+            //第二步,在循环中顺便将有密码的进行加密处理,为后续修改做准备
+            if (users.get(i).getUserPassword() != null) {
+                //获取盐值
+                String key = users.get(i).getUserPassword().split("\\$")[0];
+                //加密并修改原始的密码
+                users.get(i).setUserPassword(
+                        key + "$" + getPassword(users.get(i).getUserPassword(), key)
+                );
             }
         }
-        //修改时间
-        Integer integer = userMapper.updateUserById(users);
-        if (integer < users.size()) {
-            throw new UpdateErrorException(ServiceEnum.UPDATE_ERROR);
+        //第三步,查询结果并判断
+        List<User> userSelect = userMapper.selectAllByUserId(userIds);
+        //比较查询前后集合的个数以确定数据的完整性
+        if (userSelect.size() < users.size()) {
+            throw new UpdateUserNotExistsException(ServiceEnum.UPDATE_USER_NOT_EXISTS);
         }
-        log.info(users.size() + "个用户修改成功!");
-        return new JsonRequest<>(integer);
+        //最后一步,执行修改并监控修改结果
+        Integer column = userMapper.updateUserById(users);
+        if (column < users.size()) {
+            throw new UpdateUserErrorException(ServiceEnum.UPDATE_USER_ERROR);
+        }
+        return new JsonRequest<>(column);
     }
 
     /**
@@ -152,8 +175,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public JsonRequest<List<User>> selectAll() {
         List<User> users = userMapper.selectAllUser();
-        if (ArrayUtils.isEmpty(new List[]{users})) {
-            throw new SelectSourceIsNullException(ServiceEnum.SELECT_IS_NULL);
+        if (users.isEmpty()) {
+            throw new SelectUserSourceIsNullException(ServiceEnum.SELECT_USER_IS_NULL);
         }
         return new JsonRequest<>(users);
     }
@@ -167,11 +190,11 @@ public class UserServiceImpl implements IUserService {
     @CacheEvict(value = "users", allEntries = true)
     @Override
     public JsonRequest<Integer> deleteUserById(Long[] userId) {
-        Integer integer = userMapper.deleteByUserId(userId);
-        if (integer < userId.length) {
-            throw new DeleteExistsException(ServiceEnum.DELETE_EXISTS);
+        Integer column = userMapper.deleteByUserId(userId);
+        if (column < userId.length) {
+            throw new DeleteExistsException(ServiceEnum.DELETE_USER_EXISTS);
         }
-        return new JsonRequest<>(integer);
+        return new JsonRequest<>(column);
     }
 
     /**

@@ -1,16 +1,16 @@
 package com.chunfeng.service.customizeException.user.select;
 
 import com.chunfeng.service.customizeException.ServiceEnum;
-import com.chunfeng.service.customizeException.ServiceException;
 
 /**
- * 查询类异常
+ * 查询的数据为空
+ *
  * @author by 春风能解释
  * <p>
  * 2022/8/31
  */
-public class SelectException extends ServiceException {
-    public SelectException(ServiceEnum serviceEnum) {
+public class SelectUserSourceIsNullException extends SelectUserException {
+    public SelectUserSourceIsNullException(ServiceEnum serviceEnum) {
         super(serviceEnum);
     }
 }

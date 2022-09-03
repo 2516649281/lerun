@@ -30,12 +30,13 @@ public interface UserMapper {
     List<User> selectAllUser();
 
     /**
-     * 根据id值查询账号
+     * 根据id值批量查询账号
      *
-     * @param userId 账号id
+     * @param userIds 账号id
      * @return User
      */
-    User selectAllByUserId(Long userId);
+    List<User> selectAllByUserId(@Param("userIds") Long[] userIds);
+
 
     /**
      * 添加用户

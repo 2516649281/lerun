@@ -9,7 +9,7 @@ import com.chunfeng.service.customizeException.ServiceEnum;
  * <p>
  * 2022/8/30
  */
-public class UserNotExistsException extends LoginException {
+public class UserNotExistsException extends LoginUserException {
 
     public UserNotExistsException(ServiceEnum serviceEnum) {
         super(serviceEnum);

@@ -1,17 +1,18 @@
 package com.chunfeng.service.customizeException.user.update;
 
 import com.chunfeng.service.customizeException.ServiceEnum;
+import com.chunfeng.service.customizeException.user.UserException;
 
 /**
- * 修该数据时数据不存在
+ * 修改异常
  *
  * @author by 春风能解释
  * <p>
  * 2022/8/31
  */
-public class UpdateNotExistsException extends UpdateException {
+public class UpdateUserException extends UserException {
 
-    public UpdateNotExistsException(ServiceEnum serviceEnum) {
+    public UpdateUserException(ServiceEnum serviceEnum) {
         super(serviceEnum);
     }
 }

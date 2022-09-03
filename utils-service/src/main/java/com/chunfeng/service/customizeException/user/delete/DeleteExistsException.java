@@ -9,7 +9,7 @@ import com.chunfeng.service.customizeException.ServiceEnum;
  * <p>
  * 2022/8/31
  */
-public class DeleteExistsException extends DeleteException {
+public class DeleteExistsException extends DeleteUserException {
     public DeleteExistsException(ServiceEnum serviceEnum) {
         super(serviceEnum);
     }
