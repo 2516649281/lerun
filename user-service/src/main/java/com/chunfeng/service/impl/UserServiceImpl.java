@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -51,7 +50,7 @@ public class UserServiceImpl implements IUserService {
     /**
      * 时间格式
      */
-    @Value("${user.timeFormat}")
+    @Value("${utils.server.format}")
     private String timeFormat;
 
     /**
@@ -101,8 +100,8 @@ public class UserServiceImpl implements IUserService {
         Integer column = userMapper.insertUser(
                 new User(userName,//用户名
                         salt + "$" + getPassword(userPassword, salt),//密码
-                        new SimpleDateFormat(timeFormat).format(new Date()),//创建时间
-                        new SimpleDateFormat(timeFormat).format(new Date())));//修改时间
+                        new SimpleDateFormat(timeFormat).format(new Date())//创建时间
+                ));
         if (column < 1) {
             throw new RegisterErrorException(ServiceEnum.USER_REGISTER_ERROR);
         }
@@ -160,11 +159,12 @@ public class UserServiceImpl implements IUserService {
                 user.setUserPassword(
                         key + "$" + getPassword(user.getUserPassword(), key)
                 );
+                user.setUpdateTime(new SimpleDateFormat(timeFormat).format(new Date()));
             }
         }
         //最后一步,执行修改并监控修改结果
         Integer column = userMapper.updateUserById(users);
-        if (column < users.size()) {
+        if (column < 1) {
             throw new UpdateUserErrorException(ServiceEnum.UPDATE_USER_ERROR);
         }
         return new JsonRequest<>(column);
@@ -195,7 +195,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public JsonRequest<Integer> deleteUserById(Long[] userId) {
         Integer column = userMapper.deleteByUserId(userId);
-        if (column < userId.length) {
+        if (column < 1) {
             throw new DeleteExistsException(ServiceEnum.DELETE_USER_EXISTS);
         }
         return new JsonRequest<>(column);

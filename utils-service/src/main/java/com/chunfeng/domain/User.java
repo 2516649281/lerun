@@ -66,4 +66,17 @@ public class User implements Serializable {
         this.userStatus = userStatus;
         this.updateTime = updateTime;
     }
+
+    public User(Long userId, String userName, String userPassword, String updateTime) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.updateTime = updateTime;
+    }
+
+    public User(String userName, String userPassword, String updateTime) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.updateTime = updateTime;
+    }
 }

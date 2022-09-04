@@ -58,7 +58,7 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private IUserFeignClient userFeignClient;
 
-    @Value("${order.timeFormat}")
+    @Value("${utils.server.format}")
     private String timeFormat;
 
     /**
@@ -159,7 +159,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         Integer column = orderMapper.updateOrderById(orders);
         //分析修改结果
-        if (column < orders.size()) {
+        if (column < 1) {
             throw new UpdateOrderErrorException(ServiceEnum.UPDATE_ORDER_ERROR);
         }
         log.info(orders.size() + "条订单已修改!");
@@ -183,7 +183,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         Integer column = orderMapper.deleteOrderById(orderIds);
         //分析删除结果
-        if (column < orderIds.length) {
+        if (column < 1) {
             throw new DeleteOrderErrorException(ServiceEnum.DELETE_ORDER_ERROR);
         }
         log.warn(orderIds.length + "条订单已被永久删除!");

@@ -1,0 +1,83 @@
+#全局配置
+utils:
+  #服务器配置
+  server:
+    #各服务端口
+    port:
+      #用户模块
+      - 8080
+      #支付模块
+      - 8081
+      #订单模块
+      - 8082
+      #网关模块
+      - 10086
+    #应用名称
+    name:
+      #用户模块
+      - user-service
+      #支付模块
+      - pay-service
+      #订单模块
+      - order-service
+      #网关模块
+      - gateway-service
+    #时间格式
+    format: yyyy-MM-dd HH:mm:ss
+  #数据库配置
+  mysql:
+    #数据库url
+    url:
+      #用户模块
+      - localhost:3306/lerun_user
+      #支付模块
+      - localhost:3306/lerun_pay
+      #订单模块
+      - localhost:3306/lerun_order
+    #数据库驱动
+    driver: com.mysql.cj.jdbc.Driver
+    #数据库用户名
+    username:
+      #用户模块
+      - root
+      #支付模块
+      - root
+      #订单模块
+      - root
+    #数据库密码
+    password:
+      #用户模块
+      - 13597803422dw
+      #支付模块
+      - 13597803422dw
+      #订单模块
+      - 13597803422dw
+
+#设置响应时间
+rest:
+  template:
+    conn:
+      #最大连接延迟
+      connect-timeout: 3000
+      #最大读取延迟
+      read-timeout: 3000
+
+#开启mybatis的sql日志
+mybatis:
+  configuration:
+    #日志等级
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#springcloud配置
+spring:
+  cloud:
+    #nacos注册中心地址
+    nacos:
+      config:
+        server-addr: localhost:8848
+
+#负载均衡
+ribbon:
+  http:
+    client:
+      enabled: true

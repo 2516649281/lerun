@@ -1,30 +1,30 @@
 #服务端口
 server:
-  port: 10086
-
+  port: ${utils.server.port[3]}
 #应用名称
 spring:
+  profiles:
+    active: utils
   application:
-    name: gateway-service
+    name: ${utils.server.name[3]}
   cloud:
     gateway:
       routes:
         #用户服务模块
-        - id: user-service
-          uri: lb://user-service
+        - id: ${utils.server.name[0]}
+          uri: lb://${utils.server.name[0]}
           predicates:
             - Path=/user/**
         #支付服务模块
-        - id: pay-service
-          uri: lb://pay-service
+        - id: ${utils.server.name[1]}
+          uri: lb://${utils.server.name[1]}
           predicates:
             - Path=/pay/**
         #订单服务模块
-        - id: order-service
-          uri: lb://order-service
+        - id: ${utils.server.name[2]}
+          uri: lb://${utils.server.name[2]}
           predicates:
             - Path=/order/**
-
     lobalcors:
       add-tp-simple-url-handler-mapping: true #解决options请求被拦截
       cors-configurations:

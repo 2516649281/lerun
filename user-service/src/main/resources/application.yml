@@ -1,38 +1,15 @@
-#应用名称
-spring:
-  application:
-    name: user-service
-
-    #数据库连接
-  datasource:
-    url: jdbc:mysql://localhost:3306/lerun_user?userSSL=false&serverTimezone=GMT&allowMultiQueries=true
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 13597803422dw
-
-#开启mybatis的sql日志
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-    #springcloud配置
-  cloud:
-    nacos:
-      config:
-        server-addr: localhost:8848
 #服务端口
 server:
-  port: 8080
-
-#设置响应时间
-rest:
-  template:
-    conn:
-      connect-timeout: 3000
-      read-timeout: 3000
-
-
-#全局时间格式
-user:
-  timeFormat: yyyy-MM-dd HH:mm:ss
+  port: ${utils.server.port[0]}
+#应用名称
+spring:
+  profiles:
+    active: utils
+  application:
+    name: ${utils.server.name[0]}
+    #数据库连接
+  datasource:
+    url: jdbc:mysql://${utils.mysql.url[0]}?userSSL=false&serverTimezone=GMT&allowMultiQueries=true
+    driver-class-name: ${utils.mysql.driver}
+    username: ${utils.mysql.username[0]}
+    password: ${utils.mysql.password[0]}

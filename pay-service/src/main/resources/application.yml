@@ -1,43 +1,15 @@
+#服务端口
+server:
+  port: ${utils.server.port[1]}
 #应用名称
 spring:
   application:
-    name: pay-service
-
-    #数据库连接
+    name: ${utils.server.name[1]}
+  profiles:
+    active: utils
+  #数据库连接
   datasource:
-    url: jdbc:mysql://localhost:3306/lerun_pay?userSSL=false&serverTimezone=GMT&allowMultiQueries=true
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 13597803422dw
-
-#开启mybatis的sql日志
-mybatis:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-  #springcloud配置
-  cloud:
-    nacos:
-      config:
-        server-addr: localhost:8848
-
-ribbon:
-  http:
-    client:
-      enabled: true
-
-#设置响应时间
-rest:
-  template:
-    conn:
-      connect-timeout: 3000
-      read-timeout: 3000
-
-#服务端口
-server:
-  port: 8081
-
-#全局时间格式
-pay:
-  timeFormat: yyyy-MM-dd HH:mm:ss
+    url: jdbc:mysql://${utils.mysql.url[1]}?userSSL=false&serverTimezone=GMT&allowMultiQueries=true
+    driver-class-name: ${utils.mysql.driver}
+    username: ${utils.mysql.username[1]}
+    password: ${utils.mysql.password[1]}

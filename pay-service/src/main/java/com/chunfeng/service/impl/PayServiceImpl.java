@@ -49,7 +49,7 @@ public class PayServiceImpl implements IPayService {
     @Autowired
     private IUserFeignClient userFeignClient;
 
-    @Value("${pay.timeFormat}")
+    @Value("${utils.server.format}")
     private String timeFormat;
 
     /**
@@ -132,7 +132,7 @@ public class PayServiceImpl implements IPayService {
             throw new UpdatePayNotExistsException(ServiceEnum.UPDATE_PAY_NOT_EXISTS);
         }
         Integer column = payMapper.updatePayById(pays);
-        if (column < pays.size()) {
+        if (column < 1) {
             throw new UpdatePayErrorException(ServiceEnum.UPDATE_PAY_ERROR);
         }
         log.info(pays.size() + "条支付订单修改完成!");
@@ -154,7 +154,7 @@ public class PayServiceImpl implements IPayService {
             throw new DeletePayNotExistsException(ServiceEnum.DELETE_PAY_NOT_EXISTS);
         }
         Integer column = payMapper.deletePayById(payIds);
-        if (column < payIds.length) {
+        if (column < 1) {
             throw new DeletePayErrorException(ServiceEnum.DELETE_PAY_ERROR);
         }
         log.warn(payIds.length + "条支付订单被永久删除!");
