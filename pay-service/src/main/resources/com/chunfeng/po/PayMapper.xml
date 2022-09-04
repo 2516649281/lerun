@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chunfeng.po.PayMapper">
-    <!--支付实体类映射-->
+    <!--支付实体映射-->
     <resultMap id="payMap" type="com.chunfeng.domain.Pay">
         <result property="payId" column="pay_id"/>
         <result property="payMoney" column="pay_money"/>

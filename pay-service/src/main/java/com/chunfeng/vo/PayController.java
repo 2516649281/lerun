@@ -43,7 +43,7 @@ public class PayController {
      * @return JSON
      */
     @GetMapping("/selectI")
-    public JsonRequest<List<Pay>> selectPayById(Long[] payIds) {
+    public JsonRequest<List<Pay>> selectPayById(@RequestParam("payIds") Long[] payIds) {
         return payService.selectPayById(payIds);
     }
 

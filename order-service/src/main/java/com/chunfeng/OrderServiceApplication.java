@@ -1,8 +1,11 @@
 package com.chunfeng;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -13,6 +16,9 @@ import org.springframework.context.ConfigurableApplicationContext;
  * 2022/9/1
  */
 @SpringBootApplication
+@MapperScan({"com.chunfeng.po"})
+@EnableCaching
+@EnableFeignClients
 @Slf4j
 public class OrderServiceApplication {
     public static void main(String[] args) {

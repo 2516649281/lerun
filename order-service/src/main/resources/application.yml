@@ -15,6 +15,10 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+ribbon:
+  http:
+    client:
+      enabled: true
 
     #springcloud配置
   cloud:
@@ -26,5 +30,5 @@ server:
   port: 8082
 
 #全局时间格式
-user:
+order:
   timeFormat: yyyy-MM-dd HH:mm:ss

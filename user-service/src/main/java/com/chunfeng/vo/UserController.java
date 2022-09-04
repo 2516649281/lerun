@@ -19,6 +19,9 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController extends ServiceController {
 
+    /**
+     * 用户服务业务层
+     */
     @Autowired
     private IUserService userService;
 

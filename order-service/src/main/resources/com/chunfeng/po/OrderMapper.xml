@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chunfeng.po.OrderMapper">
+    <!--订单实体映射-->
+    <resultMap id="orderMap" type="com.chunfeng.domain.Order">
+        <result property="orderId" column="order_id"/>
+        <result property="orderName" column="order_name"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="payId" column="pay_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="placeTime" column="place_time"/>
+        <result property="takeTime" column="take_time"/>
+    </resultMap>
+    <!--查询所有订单-->
+    <select id="selectAll" resultType="com.chunfeng.domain.Order" resultMap="orderMap">
+        select order_id, order_name, order_status, pay_id, user_id, place_time, take_time
+        from `order`;
+    </select>
+    <!--根据用户id查询订单-->
+    <select id="selectOrderByUserId" resultType="com.chunfeng.domain.Order" resultMap="orderMap">
+        select order_id, order_name, order_status, pay_id, user_id, place_time, take_time
+        from `order`
+        where user_id = #{userId};
+    </select>
+    <!--根据支付id查询订单-->
+    <select id="selectOrderByPayId" resultType="com.chunfeng.domain.Order" resultMap="orderMap">
+        select order_id, order_name, order_status, pay_id, user_id, place_time, take_time
+        from `order`
+        where pay_id = #{payId};
+    </select>
+    <!--根据id值批量查询订单-->
+    <select id="selectOrderById" resultType="com.chunfeng.domain.Order" resultMap="orderMap">
+        select order_id, order_name, order_status, pay_id, user_id, place_time, take_time
+        from `order` where order_id in
+        <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>;
+    </select>
+    <!--添加一条订单-->
+    <insert id="insertOrder">
+        insert into `order` (order_name, pay_id, user_id, place_time)
+        values (#{orderName}, #{payId}, #{userId}, #{placeTime});
+    </insert>
+    <!--根据id值批量更新订单-->
+    <update id="updateOrderById">
+        <foreach collection="orders" item="order" separator=";">
+            update `order`
+            <set>
+                <if test="order.orderName!=null and order.orderName!=''">
+                    order_name=#{order.orderName},
+                </if>
+                <if test="order.orderStatus!=null and order.orderStatus!=''">
+                    order_status=#{order.orderStatus},
+                </if>
+                <if test="order.payId!=null">
+                    pay_id=#{order.payId},
+                </if>
+                <if test="order.userId!=null">
+                    user_id=#{order.userId},
+                </if>
+                <if test="order.takeTime!=null and order.takeTime!=''">
+                    take_time=#{order.takeTime}
+                </if>
+            </set>
+            where order_id=#{order.orderId}
+        </foreach>
+    </update>
+    <!--根据id值批量删除订单-->
+    <delete id="deleteOrderById">
+        delete
+        from `order`
+        where order_id in
+        <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>;
+    </delete>
+</mapper>

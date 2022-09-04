@@ -1,9 +1,7 @@
 package com.chunfeng.service.customizeException;
 
-import lombok.Data;
-
 /**
- * 业务层异常超类
+ * 业务层异常祖宗类
  *
  * @author by 春风能解释
  * <p>

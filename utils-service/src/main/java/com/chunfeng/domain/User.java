@@ -17,14 +17,38 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    private Long userId;//用户编号
-    private String userName;//用户名
-    private String userPassword;//用户密码
-    private String userAvatar;//用户头像
-    private Integer userIdentity;//用户身份(0普通用户,1跑腿员,2管理员)
-    private Integer userStatus;//用户状态(0正常,1冻结)
-    private String createTime;//创建时间
-    private String updateTime;//修改时间
+    /**
+     * 用户编号
+     */
+    private Long userId;
+    /**
+     * 用户名
+     */
+    private String userName;
+    /**
+     * 用户密码
+     */
+    private String userPassword;
+    /**
+     * 用户头像
+     */
+    private String userAvatar;
+    /**
+     * 用户身份(0普通用户,1跑腿员,2管理员)
+     */
+    private Integer userIdentity;
+    /**
+     * 用户状态(0正常,1冻结)
+     */
+    private Integer userStatus;
+    /**
+     * 创建时间
+     */
+    private String createTime;
+    /**
+     * 修改时间
+     */
+    private String updateTime;
 
     public User(String userName, String userPassword, String createTime, String updateTime) {
         this.userName = userName;

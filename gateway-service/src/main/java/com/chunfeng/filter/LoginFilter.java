@@ -6,7 +6,10 @@ import com.chunfeng.domain.User;
 import com.chunfeng.service.customizeException.ServiceEnum;
 import com.chunfeng.service.customizeException.user.login.UserNotLoginException;
 import com.chunfeng.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -24,10 +27,20 @@ import java.util.List;
  * 2022/9/2
  */
 @Component
+@Slf4j
 public class LoginFilter extends ServiceFilter {
 
+    /**
+     * 配置键配置类
+     */
     @Resource
     private FilterConfig filterConfig;
+
+    /**
+     * redis客户端
+     */
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     /**
      * 拦截器
@@ -39,11 +52,11 @@ public class LoginFilter extends ServiceFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-
         //排除指定的请求路径
         String path = request.getURI().getPath();
         for (String url : filterConfig.getExcludePath()) {
             if (path.equals(url)) {
+                log.info("拦截器无条件放行!");
                 return chain.filter(exchange);
             }
         }
@@ -61,15 +74,21 @@ public class LoginFilter extends ServiceFilter {
         List<String> tokens = headers.get("token");
         //判断请求头是否携带token
         if (tokens == null || tokens.isEmpty()) {
+            log.warn("拦截器已拦截非法请求!");
             throw new UserNotLoginException(ServiceEnum.USER_NOT_LOGIN);
         }
         //解析token
         Object object = new JwtUtils<User>().checkToken(tokens.get(0));
         //转换成实体对象
         User user = JSON.parseObject(JSON.toJSONString(object), User.class);
-        if (user.getUserId() == null) {
+        //获取redis中的token
+        String token = redisTemplate.opsForValue().get("user_login::" + user.getUserName());
+        //比较redis中的token与请求头中的是否一致
+        if (token == null || token.equals(tokens.get(0))) {
+            log.warn("拦截器已拦截非法请求!");
             throw new UserNotLoginException(ServiceEnum.USER_NOT_LOGIN);
         }
+        log.info("拦截器已放行!");
         return chain.filter(exchange);
     }
 

@@ -4,8 +4,8 @@ import com.chunfeng.domain.JsonRequest;
 import com.chunfeng.domain.Pay;
 import com.chunfeng.domain.User;
 import com.chunfeng.po.PayMapper;
-import com.chunfeng.service.IPayFeignClient;
 import com.chunfeng.service.IPayService;
+import com.chunfeng.service.IUserFeignClient;
 import com.chunfeng.service.customizeException.ServiceEnum;
 import com.chunfeng.service.customizeException.pay.delete.DeletePayErrorException;
 import com.chunfeng.service.customizeException.pay.delete.DeletePayNotExistsException;
@@ -47,7 +47,7 @@ public class PayServiceImpl implements IPayService {
      * 支付远程操作接口
      */
     @Autowired
-    private IPayFeignClient payFeignClient;
+    private IUserFeignClient userFeignClient;
 
     @Value("${pay.timeFormat}")
     private String timeFormat;
@@ -74,7 +74,10 @@ public class PayServiceImpl implements IPayService {
     @Cacheable(value = "pays_id")
     public JsonRequest<List<Pay>> selectPayById(Long[] payIds) {
         List<Pay> pays = payMapper.selectById(payIds);
-        return getListJsonRequest(pays);
+        if (pays.isEmpty()) {
+            throw new SelectPayNotExistsException(ServiceEnum.SELECT_PAY_NOT_EXISTS);
+        }
+        return new JsonRequest<>(pays);
     }
 
     /**
@@ -132,6 +135,7 @@ public class PayServiceImpl implements IPayService {
         if (column < pays.size()) {
             throw new UpdatePayErrorException(ServiceEnum.UPDATE_PAY_ERROR);
         }
+        log.info(pays.size() + "条支付订单修改完成!");
         return new JsonRequest<>(column);
     }
 
@@ -153,6 +157,7 @@ public class PayServiceImpl implements IPayService {
         if (column < payIds.length) {
             throw new DeletePayErrorException(ServiceEnum.DELETE_PAY_ERROR);
         }
+        log.warn(payIds.length + "条支付订单被永久删除!");
         return new JsonRequest<>(column);
     }
 
@@ -172,10 +177,7 @@ public class PayServiceImpl implements IPayService {
             userIds[i] = pays.get(i).getUserId();
         }
         //查询用户
-        List<User> users = payFeignClient.selectUserById(userIds).getData();
-        if (users.isEmpty()) {
-            throw new SelectPayNotExistsException(ServiceEnum.SELECT_PAY_NOT_EXISTS);
-        }
+        List<User> users = userFeignClient.selectUserById(userIds).getData();
         //组合数据
         for (int i = 0; i < pays.size(); i++) {
             pays.get(i).setUser(users.get(i));

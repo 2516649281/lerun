@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -77,6 +78,7 @@ public class UserServiceImpl implements IUserService {
         //构造token
         String token = new JwtUtils<>().createToken(user);
         log.info("用户" + userName + "登录成功!");
+        //将已登陆的用户id存储到redis中
         return new JsonRequest<>(token);
     }
 
@@ -130,7 +132,7 @@ public class UserServiceImpl implements IUserService {
      * @param users 待修改的数据
      * @return JSON
      */
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = {"users", "users_Id", "user_login"}, allEntries = true)
     @Override
     public JsonRequest<Integer> updateById(List<User> users) {
         Long[] userIds = new Long[users.size()];
@@ -142,21 +144,23 @@ public class UserServiceImpl implements IUserService {
                 break;
             }
             userIds[i] = userId;
-            //第二步,在循环中顺便将有密码的进行加密处理,为后续修改做准备
-            if (users.get(i).getUserPassword() != null) {
-                //获取盐值
-                String key = users.get(i).getUserPassword().split("\\$")[0];
-                //加密并修改原始的密码
-                users.get(i).setUserPassword(
-                        key + "$" + getPassword(users.get(i).getUserPassword(), key)
-                );
-            }
         }
-        //第三步,查询结果并判断
+        //第二步,查询结果并判断
         List<User> userSelect = userMapper.selectAllByUserId(userIds);
         //比较查询前后集合的个数以确定数据的完整性
         if (userSelect.size() < users.size()) {
             throw new UpdateUserNotExistsException(ServiceEnum.UPDATE_USER_NOT_EXISTS);
+        }
+        //第三步,将带有密码的进行加密处理,为后续修改做准备
+        for (User user : users) {
+            if (user.getUserPassword() != null) {
+                //随机生成盐值
+                String key = UUID.randomUUID().toString().toUpperCase();
+                //加密并修改原始的密码
+                user.setUserPassword(
+                        key + "$" + getPassword(user.getUserPassword(), key)
+                );
+            }
         }
         //最后一步,执行修改并监控修改结果
         Integer column = userMapper.updateUserById(users);
@@ -187,7 +191,7 @@ public class UserServiceImpl implements IUserService {
      * @param userId 用户id
      * @return JSON
      */
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = {"users", "users_Id", "user_login"}, allEntries = true)
     @Override
     public JsonRequest<Integer> deleteUserById(Long[] userId) {
         Integer column = userMapper.deleteByUserId(userId);
@@ -205,8 +209,8 @@ public class UserServiceImpl implements IUserService {
      * @return 加密后的新密码
      */
     public String getPassword(String password, String salt) {
-        //加密10次
-        for (int i = 0; i < 10; i++) {
+        //加密10000次
+        for (int i = 0; i < 10000; i++) {
             //MD5加密算法
             password = DigestUtils.md5DigestAsHex((salt + password + salt).getBytes()).toUpperCase();//重组
         }

@@ -22,21 +22,32 @@ public enum ServiceEnum {
 
     USER_REGISTER_ERROR(301, "注册失败!"),
 
-    UPDATE_USER_NOT_EXISTS(401, "修改的数据不存在!"),
-    UPDATE_USER_ERROR(402, "修改失败!"),
+    UPDATE_USER_NOT_EXISTS(401, "一个或多个待修改的用户数据不存在!"),
+    UPDATE_USER_ERROR(402, "一个或多个用户修改失败!"),
 
-    DELETE_USER_EXISTS(501, "数据失效!"),
+    DELETE_USER_EXISTS(501, "一个或多个用户数据失效!"),
 
     //支付类
     SELECT_PAY_NOT_EXISTS(106, "支付数据为空!"),
 
     INSERT_PAY_ERROR(302, "添加支付订单失败!"),
 
-    UPDATE_PAY_NOT_EXISTS(403, "待修改的支付订单不存在!"),
-    UPDATE_PAY_ERROR(406, "修改支付订单失败!"),
+    UPDATE_PAY_NOT_EXISTS(403, "一个或多个待修改的支付订单不存在!"),
+    UPDATE_PAY_ERROR(406, "一个或多个支付订单修改失败!"),
 
-    DELETE_PAY_NOT_EXISTS(502, "待删除的支付订单不存在!"),
-    DELETE_PAY_ERROR(503, "删除支付订单失败!");
+    DELETE_PAY_NOT_EXISTS(502, "一个或多个支付订单数据失效!"),
+    DELETE_PAY_ERROR(503, "一个或多个支付订单数据删除失败!"),
+
+    //订单类
+    SELECT_ORDER_NOT_EXISTS(107, "订单结果为空!"),
+
+    INSERT_ORDER_ERROR(303, "添加订单失败!"),
+
+    UPDATE_ORDER_NOT_EXISTS(407, "一个或多个待修改的订单不存在!"),
+    UPDATE_ORDER_ERROR(408, "一个或多个订单修改失败!"),
+
+    DELETE_ORDER_NOT_EXISTS(504, "一个或多个订单数据失效"),
+    DELETE_ORDER_ERROR(505, "一个或多个订单数据删除失败");
 
 
     /**
@@ -64,4 +75,4 @@ public enum ServiceEnum {
     public void setMessage(String message) {
         this.message = message;
     }
-}
+    }
