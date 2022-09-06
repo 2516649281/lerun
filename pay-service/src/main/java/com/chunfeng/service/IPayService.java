@@ -40,13 +40,15 @@ public interface IPayService {
 
     /**
      * 添加支付订单
+     *
      * @param pay 支付订单
      * @return JSON
      */
     JsonRequest<Integer> insertPay(Pay pay);
 
     /**
-     *根据支付id值修改账单
+     * 根据支付id值修改账单
+     *
      * @param pays 待修改的支付账单
      * @return JSON
      */
@@ -54,6 +56,7 @@ public interface IPayService {
 
     /**
      * 根据id值批量删除支付订单
+     *
      * @param payIds 待删除的支付订单id值
      * @return JSON
      */

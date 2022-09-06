@@ -21,10 +21,12 @@ public class JsonRequest<T> implements Serializable {
      * 状态码
      */
     private Integer status = 200;
+
     /**
      * 消息
      */
     private String message = "请求已完成!";
+
     /**
      * 数据
      */

@@ -17,7 +17,7 @@ public class daoTest {
     private UserMapper userMapper;
 
     @Test
-    void test1(){
+    void test1() {
         System.out.println(userMapper.selectAllUser());
     }
 }

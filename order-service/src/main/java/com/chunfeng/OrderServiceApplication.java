@@ -23,6 +23,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class OrderServiceApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext app = SpringApplication.run(OrderServiceApplication.class);
-        log.info(app+":订单服务模块启动完成!");
+        log.info(app + ":订单服务模块启动完成!");
     }
 }

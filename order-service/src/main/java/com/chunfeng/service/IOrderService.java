@@ -2,7 +2,6 @@ package com.chunfeng.service;
 
 import com.chunfeng.domain.JsonRequest;
 import com.chunfeng.domain.Order;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ public interface IOrderService {
 
     /**
      * 根据用户id值查询订单
+     *
      * @param userId 用户id
      * @return JSON
      */
@@ -31,6 +31,7 @@ public interface IOrderService {
 
     /**
      * 根据支付订单id值查询服务订单
+     *
      * @param payId 支付订单id
      * @return JSON
      */
@@ -46,6 +47,7 @@ public interface IOrderService {
 
     /**
      * 添加一条订单
+     *
      * @param order 订单信息
      * @return JSON
      */
@@ -53,6 +55,7 @@ public interface IOrderService {
 
     /**
      * 根据id值批量修改订单
+     *
      * @param orders 待修改的订单信息
      * @return JSON
      */
@@ -60,6 +63,7 @@ public interface IOrderService {
 
     /**
      * 根据id值批量删除订单
+     *
      * @param orderIds 待删除的订单id
      * @return JSON
      */

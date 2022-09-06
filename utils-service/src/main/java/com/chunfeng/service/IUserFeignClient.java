@@ -1,7 +1,6 @@
 package com.chunfeng.service;
 
 import com.chunfeng.domain.JsonRequest;
-import com.chunfeng.domain.Order;
 import com.chunfeng.domain.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

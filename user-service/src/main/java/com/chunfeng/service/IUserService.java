@@ -34,10 +34,12 @@ public interface IUserService {
 
     /**
      * 根据id值批量查询用户信息
+     *
      * @param userId 用户id
      * @return JSON
      */
     JsonRequest<List<User>> selectById(Long[] userId);
+
     /**
      * 根据id值修改用户
      *

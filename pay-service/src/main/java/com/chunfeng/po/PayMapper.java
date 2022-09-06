@@ -16,12 +16,14 @@ public interface PayMapper {
 
     /**
      * 查询所有支付的账单
+     *
      * @return 支付的账单
      */
     List<Pay> selectAllPay();
 
     /**
      * 根据id值查询支付的账单
+     *
      * @param payIds 支付账单id
      * @return 支付的账单
      */
@@ -29,6 +31,7 @@ public interface PayMapper {
 
     /**
      * 根据用户id值查询
+     *
      * @param userId 用户id
      * @return 支付的账单
      */
@@ -36,6 +39,7 @@ public interface PayMapper {
 
     /**
      * 添加支付账单
+     *
      * @param pay 支付账单
      * @return 影响行数
      */
@@ -43,6 +47,7 @@ public interface PayMapper {
 
     /**
      * 根据id值批量修改支付账单
+     *
      * @param pays 待修改的支付账单
      * @return 影响行数
      */
@@ -50,6 +55,7 @@ public interface PayMapper {
 
     /**
      * 根据id值批量删除支付账单
+     *
      * @param ids 待删除的支付id
      * @return 影响行数
      */

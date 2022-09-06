@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -54,6 +55,12 @@ public class UserServiceImpl implements IUserService {
     private String timeFormat;
 
     /**
+     * redis客户端
+     */
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    /**
      * 用户登录
      *
      * @param userName     用户名
@@ -61,7 +68,6 @@ public class UserServiceImpl implements IUserService {
      * @return JSON
      */
     @Override
-    @Cacheable(value = "user_login", key = "#userName")
     public JsonRequest<String> login(String userName, String userPassword) {
         User user = userMapper.selectByName(userName);
         if (Objects.isNull(user)) {
@@ -74,9 +80,10 @@ public class UserServiceImpl implements IUserService {
         if (!password.equals(user.getUserPassword())) {
             throw new UserPasswordErrorException(ServiceEnum.USER_PASSWORD_ERROR);
         }
-        //构造token
+        //构造token、
         String token = new JwtUtils<>().createToken(user);
         log.info("用户" + userName + "登录成功!");
+        redisTemplate.opsForValue().set("user_login::" + user.getUserName(), token);
         //将已登陆的用户id存储到redis中
         return new JsonRequest<>(token);
     }
@@ -88,7 +95,7 @@ public class UserServiceImpl implements IUserService {
      * @param userPassword 密码
      * @return JSON
      */
-    @CacheEvict(value = "users", allEntries = true)
+    @CacheEvict(value = {"users", "users_Id"}, allEntries = true)
     @Override
     public JsonRequest<Integer> register(String userName, String userPassword) {
         //判断数据库是否有这个用户
@@ -131,7 +138,7 @@ public class UserServiceImpl implements IUserService {
      * @param users 待修改的数据
      * @return JSON
      */
-    @CacheEvict(value = {"users", "users_Id", "user_login"}, allEntries = true)
+    @CacheEvict(value = {"users", "users_Id"}, allEntries = true)
     @Override
     public JsonRequest<Integer> updateById(List<User> users) {
         Long[] userIds = new Long[users.size()];
@@ -191,7 +198,7 @@ public class UserServiceImpl implements IUserService {
      * @param userId 用户id
      * @return JSON
      */
-    @CacheEvict(value = {"users", "users_Id", "user_login"}, allEntries = true)
+    @CacheEvict(value = {"users", "users_Id"}, allEntries = true)
     @Override
     public JsonRequest<Integer> deleteUserById(Long[] userId) {
         Integer column = userMapper.deleteByUserId(userId);

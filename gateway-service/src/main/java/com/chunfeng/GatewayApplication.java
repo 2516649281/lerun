@@ -13,7 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * <p>
  * 2022/9/2
  */
-@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @Slf4j
 public class GatewayApplication {
     public static void main(String[] args) {
