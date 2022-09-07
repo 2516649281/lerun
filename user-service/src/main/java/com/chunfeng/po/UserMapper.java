@@ -49,7 +49,7 @@ public interface UserMapper {
     /**
      * 根据id值修改当前用户
      *
-     * @param user 用户信息
+     * @param users 用户信息
      * @return 影响行数
      */
     Integer updateUserById(@Param("users") List<User> users);
@@ -57,7 +57,7 @@ public interface UserMapper {
     /**
      * 根据id值批量删除账号
      *
-     * @param userId 用户id
+     * @param userIds 用户id
      * @return 影响行数
      */
     Integer deleteByUserId(@Param("userIds") Long[] userIds);

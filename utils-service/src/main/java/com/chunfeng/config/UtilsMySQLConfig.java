@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * 数据库配置映射
+ *
  * @author by 春风能解释
  * <p>
  * 2022/9/4

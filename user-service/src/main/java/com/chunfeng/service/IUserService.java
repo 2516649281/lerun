@@ -18,7 +18,8 @@ public interface IUserService {
     /**
      * 用户登录
      *
-     * @param userName 用户名
+     * @param userName     用户名
+     * @param userPassword 密码
      * @return JSON
      */
     JsonRequest<String> login(String userName, String userPassword);

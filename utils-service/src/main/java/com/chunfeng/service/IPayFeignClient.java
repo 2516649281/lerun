@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
+ * 支付服务远程调用
+ *
  * @author by 春风能解释
  * <p>
  * 2022/9/3

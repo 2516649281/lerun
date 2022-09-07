@@ -30,7 +30,7 @@ public class Pay implements Serializable {
      */
     private String payType;
     /**
-     * 支付状态
+     * 支付状态(0未支付,1已支付,2已退款)
      */
     private Integer payStatus;
     /**
